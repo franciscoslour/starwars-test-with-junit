@@ -1,7 +1,9 @@
 package com.example.starwars.domain;
 
+import static com.example.starwars.common.PlanetConstants.INVALID_PLANET;
 import static com.example.starwars.common.PlanetConstants.PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,14 @@ public class PlanetServiceTest {
 
        assertThat(sut).isEqualTo(PLANET);
 
+    }
+
+    @Test
+    public void creatPlanet_WithInvalidData_ThrowException(){
+
+        when(planetRespository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
+
+        assertThatThrownBy(()-> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
     }
 
 }
