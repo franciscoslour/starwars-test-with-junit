@@ -1,19 +1,24 @@
 package com.example.starwars.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class PlanetService {
 
-    private PlanetRespository planetRespository;
+    private PlanetRespository planetRepository;
 
     public PlanetService(PlanetRespository planetRespository){
-        this.planetRespository = planetRespository;
+        this.planetRepository = planetRespository;
     }
 
     public Planet create(Planet planet){
-        return planetRespository.save(planet);
+        return planetRepository.save(planet);
+    }
+
+    public Optional<Planet> get(Long id) {
+        return planetRepository.findById(id);
     }
 
 }
