@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/planetes")
+@RequestMapping("/planets")
 public class PlanetController {
 
     private PlanetService planetService;
