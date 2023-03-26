@@ -2,10 +2,10 @@ package com.example.starwars.domain;
 
 import static com.example.starwars.common.PlanetConstants.INVALID_PLANET;
 import static com.example.starwars.common.PlanetConstants.PLANET;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -113,6 +113,17 @@ public class PlanetServiceTest {
 
         assertThat(sut).isEmpty();
 
+    }
+
+    @Test
+    public void removePlanet_WithExistingId_doesNotThrowAnyException() {
+       assertThatCode(() -> this.planetService.remove(anyLong())).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void removePlanet_WithUnexistingId_ThrowsException() {
+        doThrow(new RuntimeException()).when(planetRespository).deleteById(anyLong());
+        assertThatThrownBy(() -> this.planetService.remove(anyLong())).isInstanceOf(RuntimeException.class);
     }
 
 
