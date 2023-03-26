@@ -1,7 +1,10 @@
 package com.example.starwars.domain;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.querydsl.binding.QuerydslPredicateBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +26,11 @@ public class PlanetService {
 
     public Optional<Planet> findByName(String name) {
         return planetRepository.findByName(name);
+    }
+
+    public List<Planet> list(String terrain, String climate) {
+        Example<Planet> query = QueryBuilder.makeQuery(new Planet(climate, terrain));
+        return this.planetRepository.findAll(query);
     }
 
 }
