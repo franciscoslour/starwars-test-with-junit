@@ -3,6 +3,7 @@ package com.example.starwars.domain;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "planets")
@@ -11,8 +12,15 @@ public class Planet {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty
+    @Column(nullable = false, unique = true)
     private String name;
+    @NotEmpty
+    @Column(nullable = false)
     private String climate;
+    @NotEmpty
+    @Column(nullable = false)
     private String terrain;
 
     public Planet(){
