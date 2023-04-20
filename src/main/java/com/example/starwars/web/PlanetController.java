@@ -5,9 +5,12 @@ import com.example.starwars.domain.PlanetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/planets")
 public class PlanetController {
@@ -19,7 +22,9 @@ public class PlanetController {
     }
 
     @PostMapping
-    public ResponseEntity<Planet> create(@RequestBody Planet planet){
+    public ResponseEntity<Planet> create(@RequestBody @Valid Planet planet){
+        if(planet.getName() == null || planet.getName().isEmpty())
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         Planet planetCreated = this.planetService.create(planet);
         return ResponseEntity.status(HttpStatus.CREATED).body(planetCreated);
     }

@@ -3,7 +3,9 @@ package com.example.starwars.domain;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "planets")
@@ -14,12 +16,15 @@ public class Planet {
     private Long id;
 
     @NotEmpty
+    @NotNull(message = "Name can't be empty")
     @Column(nullable = false, unique = true)
     private String name;
     @NotEmpty
+    @NotNull(message = "climate can't be empty")
     @Column(nullable = false)
     private String climate;
     @NotEmpty
+    @NotNull(message = "terrain can't be empty")
     @Column(nullable = false)
     private String terrain;
 

@@ -2,6 +2,7 @@ package com.example.starwars.web;
 
 import static com.example.starwars.common.PlanetConstants.PLANET;
 
+import com.example.starwars.domain.Planet;
 import com.example.starwars.domain.PlanetService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,14 +36,35 @@ public class PlanetControllerTest {
 
         when(planetService.create(PLANET)).thenReturn(PLANET);
 
-
-        MockHttpServletRequestBuilder request = post("/planets")
-                .content(this.objectMapper.writeValueAsString(PLANET))
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(request)
+        mockMvc.perform(
+                    post("/planets")
+                        .content(this.objectMapper.writeValueAsString(PLANET))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(PLANET));
+    }
+
+
+    @Test
+    public void createPlanet_WithInvalidData_ReturnsBadRequest() throws Exception {
+
+        Planet empetyPlanet = new Planet();
+        Planet invalidPlanet = new Planet("", "", "");
+
+        mockMvc.perform(
+                        post("/planets")
+                                .content(this.objectMapper.writeValueAsString(empetyPlanet))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isUnprocessableEntity());
+
+        mockMvc.perform(
+                        post("/planets")
+                                .content(this.objectMapper.writeValueAsString(invalidPlanet))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }
