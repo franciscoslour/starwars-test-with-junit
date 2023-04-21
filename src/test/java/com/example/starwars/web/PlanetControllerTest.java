@@ -1,10 +1,7 @@
 package com.example.starwars.web;
 
-import static com.example.starwars.common.PlanetConstants.PLANET;
-
 import com.example.starwars.domain.Planet;
 import com.example.starwars.domain.PlanetService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +10,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import static com.example.starwars.common.PlanetConstants.*;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.when;
 
 @WebMvcTest(PlanetController.class)
 public class PlanetControllerTest {
@@ -125,6 +125,42 @@ public class PlanetControllerTest {
 
         mockMvc.perform(get("/planets/name/name"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public  void listPlanets_ReturnsFilteredPlanets() throws Exception {
+        when(planetService.list(null, null)).thenReturn(PLANETS);
+        when(planetService.list(TATOOINE.getTerrain(), TATOOINE.getClimate())).thenReturn(List.of(TATOOINE));
+
+        mockMvc
+                .perform(
+                    get("/planets")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+
+        mockMvc
+                .perform(
+                        get("/planets")
+                                .queryParam("terrain",TATOOINE.getTerrain())
+                                .queryParam("climate",TATOOINE.getClimate())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0]").value(TATOOINE));
+    }
+
+    @Test
+    public void listPlanets_ReturnsNoPlanets() throws Exception {
+        when(planetService.list(null, null)).thenReturn(Collections.emptyList());
+
+        mockMvc
+                .perform(
+                        get("/planets")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+
     }
 
 }
