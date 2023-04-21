@@ -13,8 +13,7 @@ import java.util.Optional;
 
 import static com.example.starwars.common.PlanetConstants.PLANET;
 import static com.example.starwars.common.PlanetConstants.TATOOINE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 
 @DataJpaTest
@@ -110,6 +109,14 @@ public class PlanetRespositoryTest {
         assertThat(responseWithFilters).isNotEmpty();
         assertThat(responseWithFilters).hasSize(1);
         assertThat(responseWithFilters.get(0)).isEqualTo(TATOOINE);
+    }
+
+    @Test
+    public void listPlanets_ReturnsNoPlanets(){
+        Example<Planet> query = QueryBuilder.makeQuery(new Planet());
+        List<Planet> response = planetRespository.findAll(query);
+
+        assertThat(response).isEmpty();
     }
 
 }
